@@ -7,6 +7,7 @@
 
  //dependencies
  const http = require("http")
+ const {handleReqRes}= require("./helpers/handleReqRes")
 
  //app object - module scaffolding
  const app ={}
@@ -26,10 +27,7 @@
  }
 
  //handle Request Response
- app.handleReqRes=(req,res)=>{
-    //response handle
-    res.end("Hello world ho")
- }
+ app.handleReqRes=handleReqRes
 
 
 
