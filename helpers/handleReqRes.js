@@ -7,6 +7,9 @@
  //dependencies
  const url = require("url")
  const {StringDecoder} = require("string_decoder")
+ const routes = require("../routes")
+ const {notFoundHandlers} = require("../handlers/routeHandlers/notFoundHandlers")
+const { STATUS_CODES } = require("http")
 
  //module scaffolding
  const handler = {}
@@ -20,8 +23,32 @@
      const method = req.method.toLowerCase()
      const queryStringObject = parsedUrl.query
      const headersObject = req.headers
+
+     const requestProperties = {
+        parsedUrl,
+        path,
+        trimmedPath,
+        method,
+        queryStringObject,
+        headersObject
+     }
+
      const decoder = new StringDecoder('utf-8')
      let realData = ''
+
+
+    const chosenHandler= routes[trimmedPath] ? routes[trimmedPath] : notFoundHandlers
+
+    chosenHandler(requestProperties, (statusCode, payload)=>{
+        statusCode = typeof(statusCode) === 'number' ? statusCode : 500
+        payload = typeof(payload) === 'object' ? payload : {}
+
+        const payloadString = JSON.stringify(payload)
+
+        // return the final response
+        res.writeHead(statusCode)
+        res.end(payloadString)
+    })
      req.on("data", (buffer)=>{
          realData += decoder.write(buffer)
      })
