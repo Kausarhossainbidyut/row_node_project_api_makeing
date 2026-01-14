@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index"
+    "production": "NODE_ENV=production node index",
+    "start": "NODE_ENV=STAGING nodemon index"
   }
 }
