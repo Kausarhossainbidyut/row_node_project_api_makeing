@@ -16,7 +16,7 @@
 
 //testing file system
 //@TOTO pore muche dibo
-data.update('test','newFile',{'name':'englend', 'language':'english'}, (err)=>{
+data.delete('test','newFile', (err)=>{
    console.log(err,);
    
 })
