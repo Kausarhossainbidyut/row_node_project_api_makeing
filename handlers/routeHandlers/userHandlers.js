@@ -150,7 +150,35 @@
  }
 
  handle._users.delete = (requestProperties, callback)=>{
+    const phone = typeof(requestProperties.body.phone)=== 'string' && requestProperties.body.phone.trim().length === 11 ? requestProperties.body.phone : false
 
+    if(phone){
+        // lookup the user
+        data.read('users',  phone, (err1,userData)=>{
+            if(!err1 && userData){
+                data.delete('users', phone, (err2)=>{
+                    if(!err2){
+                        callback(200, {
+                                'message': 'User was deleted successfully!'
+                            })
+                    }else{
+                        callback(500,{
+                            'error': 'There was a server side error!'
+                        })
+                    }
+                })
+            }else{
+                callback(500,{
+            'error': 'There was a server side error!'
+        })
+            }
+        })
+
+    }else{
+        callback(400,{
+            'error': 'There was a problem in your request!'
+        })
+    }
  }
 
 
