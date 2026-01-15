@@ -9,7 +9,7 @@
  const {StringDecoder} = require("string_decoder")
  const routes = require("../routes")
  const {notFoundHandlers} = require("../handlers/routeHandlers/notFoundHandlers")
-const { STATUS_CODES } = require("http")
+ const {parseJSON} = require('../helpers/utilities')
 
  //module scaffolding
  const handler = {}
@@ -47,6 +47,8 @@ const { STATUS_CODES } = require("http")
      req.on('end', ()=>{
          realData += decoder.end()
 
+        requestProperties.body = parseJSON(realData)
+
         chosenHandler(requestProperties, (statusCode, payload)=>{
         statusCode = typeof(statusCode) === 'number' ? statusCode : 500
         payload = typeof(payload) === 'object' ? payload : {}
@@ -54,11 +56,12 @@ const { STATUS_CODES } = require("http")
         const payloadString = JSON.stringify(payload)
 
         // return the final response
+        res.setHeader('Content-Type', 'application/json')
         res.writeHead(statusCode)
         res.end(payloadString)
     })
          //response handle
-         res.end("Hello world ho")
+        //  res.end("Hello world ho")
      })
      
   }

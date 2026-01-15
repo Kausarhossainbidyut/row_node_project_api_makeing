@@ -16,10 +16,10 @@
 
 //testing file system
 //@TOTO pore muche dibo
-data.delete('test','newFile', (err)=>{
-   console.log(err,);
+// data.delete('test','newFile', (err)=>{
+//    console.log(err,);
    
-})
+// })
 
  //create server
  app.createServer =()=>{
