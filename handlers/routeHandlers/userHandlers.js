@@ -8,6 +8,7 @@
  //dependencies
  const data = require('../../lib/data')
  const {hash, parseJSON} = require('../../helpers/utilities')
+ const tokenHandler = require('./tokenHandler')
 
  const handle = {}
 
@@ -76,7 +77,12 @@
     const phone = typeof(requestProperties.queryStringObject.phone)=== 'string' && requestProperties.queryStringObject.phone.trim().length === 11 ? requestProperties.queryStringObject.phone : false
 
     if(phone){
-        // lookup the user
+        // verify the token
+        let token = typeof(requestProperties.headersObject.token) === 'string' ? requestProperties.headersObject.token : false
+
+        tokenHandler._token.verify(token, phone, (tokenId)=>{
+            if(tokenId){
+                 // lookup the user
         data.read('users', phone, (err, u)=>{
             const user = {...parseJSON(u)}
             if(!err && user){
@@ -88,6 +94,13 @@
                 })
             }
         })
+            }else{
+                callback(403,{
+                    'error': 'Authentication failure!'
+                })
+            }
+        })
+       
     }else{
         callback(400, {
             'error': 'Requested user was not found!'
