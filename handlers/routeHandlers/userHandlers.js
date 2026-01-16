@@ -109,7 +109,7 @@
 
  }
 
- // @Todo Authentication
+ 
  handle._users.put = (requestProperties, callback)=>{
     const firstName = typeof(requestProperties.body.firstName)=== 'string' && requestProperties.body.firstName.trim().length >0 ? requestProperties.body.firstName : false
 
@@ -183,8 +183,14 @@
     const phone = typeof(requestProperties.body.phone)=== 'string' && requestProperties.body.phone.trim().length === 11 ? requestProperties.body.phone : false
 
     if(phone){
-        // lookup the user
-        data.read('users',  phone, (err1,userData)=>{
+
+        // verify the token
+        let token = typeof(requestProperties.headersObject.token) === 'string' ? requestProperties.headersObject.token : false
+
+        tokenHandler._token.verify(token, phone, (tokenId)=>{
+            if(tokenId){
+                 // lookup the user
+                  data.read('users',  phone, (err1,userData)=>{
             if(!err1 && userData){
                 data.delete('users', phone, (err2)=>{
                     if(!err2){
@@ -203,6 +209,15 @@
         })
             }
         })
+            }else{
+                callback(403,{
+                    'error': 'Authentication failure!'
+                })
+            }
+        })
+
+        // lookup the user
+       
 
     }else{
         callback(400,{
