@@ -71,7 +71,7 @@
 
  }
 
-  // @Todo Authentication
+  
  handle._users.get = (requestProperties, callback)=>{
     // check the phon number is valid
     const phone = typeof(requestProperties.queryStringObject.phone)=== 'string' && requestProperties.queryStringObject.phone.trim().length === 11 ? requestProperties.queryStringObject.phone : false
@@ -121,7 +121,13 @@
 
     if(phone){
         if (firstName || lastName || password ){
-            // lookup the user
+
+        // verify the token
+        let token = typeof(requestProperties.headersObject.token) === 'string' ? requestProperties.headersObject.token : false
+
+        tokenHandler._token.verify(token, phone, (tokenId)=>{
+            if(tokenId){
+          // lookup the user
             data.read('users', phone, (err1, uData)=>{
                 const userData = {...parseJSON(uData)}
                 if(!err1 && userData){
@@ -152,6 +158,14 @@
                     })
                 }
             })
+
+            }else{
+                callback(403,{
+                    'error': 'Authentication failure!'
+                })
+            }
+        })
+
         }else{
         callback(400, {
             'error': 'You have a problem in your request!'
