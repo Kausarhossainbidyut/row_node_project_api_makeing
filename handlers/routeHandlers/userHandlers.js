@@ -70,6 +70,7 @@
 
  }
 
+  // @Todo Authentication
  handle._users.get = (requestProperties, callback)=>{
     // check the phon number is valid
     const phone = typeof(requestProperties.queryStringObject.phone)=== 'string' && requestProperties.queryStringObject.phone.trim().length === 11 ? requestProperties.queryStringObject.phone : false
@@ -95,6 +96,7 @@
 
  }
 
+ // @Todo Authentication
  handle._users.put = (requestProperties, callback)=>{
     const firstName = typeof(requestProperties.body.firstName)=== 'string' && requestProperties.body.firstName.trim().length >0 ? requestProperties.body.firstName : false
 
@@ -149,6 +151,7 @@
     }
  }
 
+  // @Todo Authentication
  handle._users.delete = (requestProperties, callback)=>{
     const phone = typeof(requestProperties.body.phone)=== 'string' && requestProperties.body.phone.trim().length === 11 ? requestProperties.body.phone : false
 

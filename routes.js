@@ -11,7 +11,8 @@
 
  const routes = {
     sample: sampleHandlers,
-    user : userHandlers
+    user : userHandlers,
+    token : tokenHandler,
  }
 
  module.exports= routes
