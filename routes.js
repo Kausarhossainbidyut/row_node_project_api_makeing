@@ -8,6 +8,7 @@
  //dependency
  const {sampleHandlers} = require("./handlers/routeHandlers/sampleHandlers")
  const {userHandlers} = require("./handlers/routeHandlers/userHandlers")
+ const {tokenHandler} = require("./handlers/routeHandlers/tokenHandler")
 
  const routes = {
     sample: sampleHandlers,
