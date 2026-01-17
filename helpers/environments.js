@@ -15,12 +15,14 @@
     port: 3000,
     envName: 'staging',
     secretKey: 'hjdhjdshdkfalfjalkfdjlafalkfal',
+    maxChecks: 5
  }
 
  environments.production = {
     port: 5000,
     envName: 'production',
     secretKey: 'sdfsalfjdaklfjlkajflakfkajfdkj',
+    maxChecks: 5
  }
 
  // determine which environments was passed

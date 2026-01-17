@@ -178,7 +178,7 @@
     }
  }
 
-  // @Todo Authentication
+  
  handle._users.delete = (requestProperties, callback)=>{
     const phone = typeof(requestProperties.body.phone)=== 'string' && requestProperties.body.phone.trim().length === 11 ? requestProperties.body.phone : false
 
@@ -215,8 +215,6 @@
                 })
             }
         })
-
-        // lookup the user
        
 
     }else{
