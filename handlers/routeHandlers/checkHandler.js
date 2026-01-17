@@ -18,7 +18,9 @@
     if(acceptedMethods.indexOf(requestProperties.method)> -1){
         handle._check[requestProperties.method](requestProperties, callback)
     }else{
-        callback(405,)
+        callback(405, {
+            error: 'Method not allowed'
+        })
     }
     
     
@@ -44,7 +46,7 @@
         // lookup the user phone by reading the token
         data.read('tokens', token, (err1, tokenData)=>{
             if(!err1 && tokenData){
-                let userPhone = parseJSON(tokenData).userPhone
+                let userPhone = parseJSON(tokenData).phone
                 // lookup the user data
                 data.read('users', userPhone, (err2, userData)=>{
                     if(!err2 && userData){
@@ -68,7 +70,7 @@
                                     data.create('checks', checkId, checkObject, (err3)=>{
                                         if(!err3){
                                             // add check id to the user's Object
-                                            userObject. checks = userChecks,
+                                            userObject.checks = userChecks
                                             userObject.checks.push(checkId)
 
                                             // save the new user data
