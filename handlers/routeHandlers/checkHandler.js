@@ -160,7 +160,81 @@
  }
  
  handle._check.put = (requestProperties, callback)=>{
+    // check the id is valid
+    const id = typeof requestProperties.body.id=== 'string' && requestProperties.body.id.trim().length === 20 ? requestProperties.body.id : false
 
+    // validate inputs
+    let protocol = typeof(requestProperties.body.protocol) === 'string' && ['http', 'https'].indexOf(requestProperties.body.protocol) > -1 ? requestProperties.body.protocol : false
+
+    let url = typeof(requestProperties.body.url) === 'string' && requestProperties.body.url.trim().length > 0 ? requestProperties.body.url : false
+
+    let method = typeof(requestProperties.body.method) === 'string' && ['GET', 'POST', 'PUT', 'DELETE'].indexOf(requestProperties.body.method) > -1 ? requestProperties.body.method : false
+
+    let successCodes = typeof(requestProperties.body.successCodes) === 'object' && requestProperties.body.successCodes instanceof Array ?  requestProperties.body.successCodes : false
+
+    let timeOutSeconds = typeof(requestProperties.body.timeOutSeconds) === 'number' && requestProperties.body.timeOutSeconds % 1 === 0 && requestProperties.body.timeOutSeconds >= 1 && requestProperties.body.timeOutSeconds <= 5 ?  requestProperties.body.timeOutSeconds : false
+
+
+    if(id){
+        if(protocol || url || method || successCodes || timeOutSeconds){
+            data.read('checks', id, (err1, checkData)=>{
+                if(!err1 && checkData){
+                    let checkObject = parseJSON(checkData)
+                    let token = typeof(requestProperties.headersObject.token) === 'string' ? requestProperties.headersObject.token : false
+
+                     tokenHandler._token.verify(token, checkObject.userPhone, (tokenIsValid)=>{
+                        if(tokenIsValid){
+                            if(protocol){
+                                checkObject.protocol = protocol
+                            }
+                            if(url){
+                                checkObject.url = url
+                            }
+                            if(method){
+                                checkObject.method = method
+                            }
+                            if(successCodes){
+                                checkObject.successCodes = successCodes
+                            }
+                            if(timeOutSeconds){
+                                checkObject.timeOutSeconds = timeOutSeconds
+                            }
+
+                            // store the checkObject
+                            data.update('checks', id, checkObject, (err2)=>{
+                                if(!err2){
+                                    callback(200)
+                                }else{
+                                    callback(404,{
+                                    'error': 'Check not found!'
+                                })
+                                }
+                            })
+
+                        }else{
+                            callback(403, {
+                                'error': 'Authentication error!'
+                            })
+                        }
+                     })
+
+
+                }else{
+                    callback(500,{
+                        'error':'There was a problem in the server side!'
+                    })
+                }
+            })
+        }else{
+            callback(400,{
+                'error': 'you must provide at least one field to update!'
+            })
+        }
+    }else{
+        callback(400,{
+            'error': 'You have a problem in your request!'
+        })
+    }
  }
   
  handle._check.delete = (requestProperties, callback)=>{
